@@ -17,7 +17,7 @@ BST create(std::vector<std::optional<int>>&& arr) {
 }
 
 int main() {
-    BST bst = create({15, 6, 18, 3, 7, 17, 20, 2, 4, {}, 13, 
+    BST bst = create({15, 6, 18, 3, 8, 17, 20, 2, 4, {}, 13, 
             {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, 9});
 
     std::string tree = R"(  
@@ -26,7 +26,7 @@ int main() {
                       /         \
                      6           18
                    /   \       /    \
-                  3     7     17    20
+                  3     8     17    20
                 /   \     \
                2     4     13
                           /
@@ -45,29 +45,45 @@ int main() {
     int compare_count = 0;
 
     // search
-    auto node = bst.search(20, &compare_count);
-    if (node != nullptr) {
-        std::cout << "search: key = " << node->key << "; value = " << node->value << std::endl;
-    }
-    std::cout << "search compare_count:" << compare_count << std::endl;
+    auto val = bst.search(20, &compare_count);
+    std::cout << "search: value=" << val.value_or(-1) << ' ';
+    std::cout << "compare_count=" << compare_count << std::endl;
 
     // iterative search
-    node = bst.iterative_search(20, &compare_count);
-    if (node != nullptr) {
-        std::cout << "iterative search: key = " << node->key << "; value = " << node->value << std::endl;
-    }
-    std::cout << "iterative compare_count:" << compare_count << std::endl;
+    val = bst.iterative_search(20, &compare_count);
+    std::cout << "iterative search: value=" << val.value_or(-1) << ' ';
+    std::cout << "compare_count=" << compare_count << std::endl;
+
+    val = bst.iterative_search(8, &compare_count);
+    std::cout << "iterative search: value=" << val.value_or(-1) << ' ';
+    std::cout << "compare_count=" << compare_count << std::endl;
 
     // minimum
-    node = bst.minimum();
-    if (node != nullptr) {
-        std::cout << "minimum: key = " << node->key << "; value = " << node->value << std::endl;
-    }
+    auto pair = bst.minimum();
+    if (pair)
+        std::cout << "minimum: key=" << pair->first<< " value=" << pair->second<< std::endl;
 
     // maximum
-    node = bst.maximum();
-    if (node != nullptr) {
-        std::cout << "maximum: key = " << node->key << "; value = " << node->value << std::endl;
-    }
+    pair = bst.maximum();
+    if (pair)
+        std::cout << "minimum: key=" << pair->first << " value=" << pair->second<< std::endl;
+
+
+    // insert
+    bst.insert(7, 7);
+
+    std::cout << "insert 7, inorder:";
+    bst.inorder([](const int& key, const int& value) {
+        std::cout << ' ' << key;
+    });
+    std::cout << std::endl;
+
+    // remove 
+    bst.remove(6);
+    std::cout << "remove 6, inorder:";
+    bst.inorder([](const int& key, const int& value) {
+        std::cout << ' ' << key;
+    });
+    std::cout << std::endl;
     return 0;
 }
