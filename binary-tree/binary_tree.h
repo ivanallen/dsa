@@ -14,6 +14,18 @@ struct Node {
         this->p = nullptr;
     }
 
+    void set_left(Node* node) {
+        if (node == nullptr) return;
+        left.reset(node);
+        node->p = this;
+    }
+
+    void set_right(Node* node) {
+        if (node == nullptr) return;
+        right.reset(node);
+        node->p = this;
+    }
+
     std::unique_ptr<Node> left;
     std::unique_ptr<Node> right;
     Node* p;
@@ -43,10 +55,18 @@ public:
     }
 
     // 中序
-    void inorder(const std::function<void (const K&, const V&)>& cb) {
+    void inorder(const std::function<void (const K&, const V&)>& cb) const {
         _inorder(_root.get(), cb);
     }
 
+    // 前序
+    void preorder(const std::function<void (const K&, const V&)>& cb) const {
+        _preorder(_root.get(), cb);
+    }
+
+    void postorder(const std::function<void (const K&, const V&)>& cb) const {
+        _postorder(_root.get(), cb);
+    }
 private:
     void _init(std::vector<std::unique_ptr<TreeNode>>&& list) {
         std::queue<TreeNode*> _q;
@@ -63,11 +83,11 @@ private:
 
             auto left = it++;
             if (left == list.end()) break;
-            if (front != nullptr) {
+            if (!is_null(front)) {
                 front->left.swap(*left);
                 _q.push(front->left.get());
 
-                if (front->left != nullptr) {
+                if (!is_null(front->left.get())) {
                     front->left->p = front;
                 }
             } else {
@@ -76,11 +96,11 @@ private:
 
             auto right = it++;
             if (right == list.end()) break;
-            if (front != nullptr) {
+            if (!is_null(front)) {
                 front->right.swap(*right);
                 _q.push(front->right.get());
 
-                if (front->right != nullptr) {
+                if (!is_null(front->right.get())) {
                     front->right->p = front;
                 }
             } else {
@@ -90,14 +110,29 @@ private:
         }
     }
 
-    void _inorder(TreeNode* x, const std::function<void (const K&, const V&)>& cb) {
-        if (x == nullptr) return;
+    void _inorder(TreeNode* x, const std::function<void (const K&, const V&)>& cb) const {
+        if (is_null(x)) return;
 
         _inorder(x->left.get(), cb);
         cb(x->key, x->value);
         _inorder(x->right.get(), cb);
     }
 
+    void _preorder(TreeNode* x, const std::function<void (const K&, const V&)>& cb) const {
+        if (is_null(x)) return;
+
+        cb(x->key, x->value);
+        _preorder(x->left.get(), cb);
+        _preorder(x->right.get(), cb);
+    }
+
+    void _postorder(TreeNode* x, const std::function<void (const K&, const V&)>& cb) const {
+        if (is_null(x)) return;
+
+        _postorder(x->left.get(), cb);
+        _postorder(x->right.get(), cb);
+        cb(x->key, x->value);
+    }
 protected:
     TreeNode* root() {
         return _root.get();
@@ -108,7 +143,7 @@ protected:
     }
 
     bool is_left_child(TreeNode* x) {
-        if (x->p == nullptr) {
+        if (is_null(x->p)) {
             return true;
         }
 
@@ -121,11 +156,11 @@ protected:
     // 将 x 节点从树中摘除，但是不销毁
     // 同时返回 x 以前的父节点
     TreeNode* detach(TreeNode* x) {
-        if (x == nullptr) {
+        if (is_null(x)) {
             return nullptr;
         }
 
-        if (x->p == nullptr) {
+        if (is_null(x->p)) {
             _root.release();
             return nullptr;
         }
@@ -148,7 +183,7 @@ protected:
         // 将 u 从树中摘除
         auto u_p = detach(u);
 
-        if (u_p == nullptr) {
+        if (is_null(u_p)) {
             set_root(v);
             return u;
         }
@@ -158,10 +193,66 @@ protected:
         } else {
             u_p->right.reset(v);
         }
-        if (v != nullptr) {
+        if (!is_null(v)) {
             v->p = u_p;
         }
         return u;
+    }
+
+    /*
+            |
+            x
+          /   \
+         a     y
+             /   \
+            b     c
+
+               || 
+
+                |
+                y
+              /   \
+             x     c
+           /   \
+          a     b
+
+     */
+    bool left_rotate(TreeNode* x) {
+        if (is_null(x)) return false;
+        auto y = x->right.get();
+        if (is_null(y)) return false;
+        // 1. detach y
+        detach(y);
+        // 2. x->right = b
+        auto b = y->left.get();
+        detach(b);
+        x->set_right(b);
+        // 3. transplant(x, y)
+        transplant(x, y);
+        // 4. y->left = x
+        y->set_left(x);
+        return true;
+    }
+
+    bool right_rotate(TreeNode* y) {
+        if (is_null(y)) return false;
+        auto x = y->left.get();
+        if (is_null(x)) return false;
+        // 1. detach y
+        detach(x);
+        // 2. y->left = b
+        auto b = x->right.get();
+        detach(b);
+        y->set_left(b);
+        // 3. transplant(y, x)
+        transplant(y, x);
+        // 4. x->right = y
+        x->set_right(y);
+        return true;
+    }
+
+    virtual bool is_null(TreeNode* x) const {
+        return x == nullptr;
     }
 private:
     std::unique_ptr<TreeNode> _root;

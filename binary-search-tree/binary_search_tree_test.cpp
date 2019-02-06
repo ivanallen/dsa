@@ -16,6 +16,24 @@ BST create(std::vector<std::optional<int>>&& arr) {
     return std::move(bst);
 }
 
+void show(const BST& bst, const char* prompt = nullptr) {
+    if (prompt != nullptr)
+        std::cout << prompt << ' ';
+    std::cout << "inorder:[";
+    bst.inorder([](const int& key, const int& value) {
+        std::cout << ' ' << key;
+    });
+    std::cout << " ] preorder:[";
+    bst.preorder([](const int& key, const int& value) {
+        std::cout << ' ' << key;
+    });
+    std::cout << " ] postorder:[";
+    bst.postorder([](const int& key, const int& value) {
+        std::cout << ' ' << key;
+    });
+    std::cout << " ]" << std::endl;
+}
+
 int main() {
     BST bst = create({15, 6, 18, 3, 8, 17, 20, 2, 4, {}, 13, 
             {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, 9});
@@ -35,12 +53,34 @@ int main() {
 
     std::cout << tree << std::endl;
 
-    // inorder
-    std::cout << "inorder:";
-    bst.inorder([](const int& key, const int& value) {
-        std::cout << ' ' << key;
-    });
-    std::cout << std::endl;
+    show(bst);
+    bst.left_rotate(6);
+    show(bst);
+    bst.right_rotate(8);
+    show(bst);
+
+    // 将 2 叉树旋转成向右延展的链
+    /*
+    bst.left_rotate(3);
+    bst.right_rotate(13);
+    bst.right_rotate(18);
+    bst.left_rotate(6);
+    bst.left_rotate(8);
+    bst.left_rotate(9);
+    bst.left_rotate(13);
+
+    bst.right_rotate(15);
+    bst.right_rotate(13);
+    bst.right_rotate(9);
+    bst.right_rotate(8);
+    bst.right_rotate(6);
+    bst.right_rotate(4);
+    bst.right_rotate(4);
+    bst.right_rotate(3);
+    bst.right_rotate(2);
+    show(bst, "extent link");
+    */
+
 
     int compare_count = 0;
 
@@ -71,19 +111,10 @@ int main() {
 
     // insert
     bst.insert(7, 7);
-
-    std::cout << "insert 7, inorder:";
-    bst.inorder([](const int& key, const int& value) {
-        std::cout << ' ' << key;
-    });
-    std::cout << std::endl;
+    show(bst, "insert 7");
 
     // remove 
     bst.remove(6);
-    std::cout << "remove 6, inorder:";
-    bst.inorder([](const int& key, const int& value) {
-        std::cout << ' ' << key;
-    });
-    std::cout << std::endl;
+    show(bst, "remove 6");
     return 0;
 }
