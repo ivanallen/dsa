@@ -11,8 +11,9 @@
 template <typename K, typename V>
 class BinarySearchTree : public BinaryTree<K, V> {
 public:
-    //using BinaryTree<K, V>::root;
     using typename BinaryTree<K, V>::TreeNode;
+
+    BinarySearchTree() {}
 
     BinarySearchTree(std::vector<std::optional<std::pair<K, V>>>&& list) :
         BinaryTree<K, V>(std::move(list)) {}
@@ -23,7 +24,7 @@ public:
             *compare_count = 0;
         }
         auto x = _search(this->root(), k, compare_count);
-        return this->is_null(x) ? std::nullopt : std::optional<V>(x->value);
+        return this->is_leaf(x) ? std::nullopt : std::optional<V>(x->value);
     }
 
     // 迭代算法查询
@@ -33,7 +34,7 @@ public:
         }
 
         TreeNode* x = this->root();
-        while(!this->is_null(x)) {
+        while(!this->is_leaf(x)) {
             if (k == x->key) {
                 if (compare_count != nullptr) {
                     (*compare_count) += 1;
@@ -51,13 +52,13 @@ public:
                 x = x->right.get();
             }
         }
-        return this->is_null(x) ? std::nullopt : std::optional<V>(x->value);
+        return this->is_leaf(x) ? std::nullopt : std::optional<V>(x->value);
     }
     
     // 求最小
     std::optional<std::pair<K, V>> minimum() {
         TreeNode* x = this->root();
-        if (this->is_null(x)) return std::nullopt;
+        if (this->is_leaf(x)) return std::nullopt;
 
         auto node = _minimum(x);
         return std::make_pair(node->key, node->value);
@@ -66,7 +67,7 @@ public:
     // 求最大
     std::optional<std::pair<K, V>> maximum() {
         TreeNode* x = this->root();
-        if (this->is_null(x)) return std::nullopt;
+        if (this->is_leaf(x)) return std::nullopt;
 
         auto node = _maximum(x);
         return std::make_pair(node->key, node->value);
@@ -79,7 +80,7 @@ public:
 
     bool remove(const K& k) {
         TreeNode* z = _search(this->root(), k, nullptr);
-        if (this->is_null(z)) return false;
+        if (this->is_leaf(z)) return false;
 
         return _remove(z);
     }
@@ -95,9 +96,10 @@ public:
         auto x = _search(this->root(), k, nullptr);
         return BinaryTree<K, V>::right_rotate(x);
     }
-private:
+
+protected:
     TreeNode* _search(TreeNode* x, const K& k, int* compare_count) {
-        if (this->is_null(x) || x->key == k) {
+        if (this->is_leaf(x) || x->key == k) {
             if (compare_count != nullptr) {
                 ++(*compare_count);
             }
@@ -117,7 +119,7 @@ private:
 
     TreeNode* _minimum(TreeNode* x) {
         // 假设 x 总不为 null
-        while(!this->is_null(x->left.get())) {
+        while(!this->is_leaf(x->left.get())) {
             x = x->left.get();
         }
         return x;
@@ -125,7 +127,7 @@ private:
 
     TreeNode* _maximum(TreeNode* x) {
         // 假设 x 总不为 null
-        while(!this->is_null(x->right.get())) {
+        while(!this->is_leaf(x->right.get())) {
             x = x->right.get();
         }
         return x;
@@ -137,14 +139,14 @@ private:
         // 技巧：维护一个指针 y, y 始终是 x 的父节点
         auto x = this->root();
         // 1. 空树
-        if (this->is_null(x)) {
+        if (this->is_leaf(x)) {
             this->set_root(z);
             return;
         }
         TreeNode* y = nullptr;
 
         // 2. 非空，寻找 z 的位置
-        while(!this->is_null(x)) {
+        while(!this->is_leaf(x)) {
             y = x;
 
             // down
@@ -165,16 +167,16 @@ private:
 
     // 求后继
     TreeNode* _successor(TreeNode* x) {
-        if (this->is_null(x)) return nullptr;
+        if (this->is_leaf(x)) return nullptr;
 
         // 1. right child is not empty
-        if (!this->is_null(x->right.get())) {
+        if (!this->is_leaf(x->right.get())) {
             return _minimum(x->right.get());
         }
 
         // 2. right child is empty, find lowest acestor
         TreeNode* y = x->p;
-        while(!this->is_null(y) && y->right.get() != x) {
+        while(!this->is_leaf(y) && y->right.get() != x) {
             x = y;
             y = x->p;
         }
@@ -182,13 +184,13 @@ private:
     }
 
     bool _remove(TreeNode* z) {
-        if (this->is_null(z)) return false;
+        if (this->is_leaf(z)) return false;
 
-        if (this->is_null(z->left.get())) {
+        if (this->is_leaf(z->left.get())) {
             auto r = z->right.get();
             this->detach(r);
             this->transplant(z, r);
-        } else if (this->is_null(z->right.get())) {
+        } else if (this->is_leaf(z->right.get())) {
             auto l = z->right.get();
             this->detach(l);
             this->transplant(z, l);

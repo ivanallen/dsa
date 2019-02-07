@@ -20,15 +20,15 @@ void show(const BST& bst, const char* prompt = nullptr) {
     if (prompt != nullptr)
         std::cout << prompt << ' ';
     std::cout << "inorder:[";
-    bst.inorder([](const int& key, const int& value) {
+    bst.inorder([](const int& key, const int& value, Color color) {
         std::cout << ' ' << key;
     });
     std::cout << " ] preorder:[";
-    bst.preorder([](const int& key, const int& value) {
+    bst.preorder([](const int& key, const int& value, Color color) {
         std::cout << ' ' << key;
     });
     std::cout << " ] postorder:[";
-    bst.postorder([](const int& key, const int& value) {
+    bst.postorder([](const int& key, const int& value, Color color) {
         std::cout << ' ' << key;
     });
     std::cout << " ]" << std::endl;

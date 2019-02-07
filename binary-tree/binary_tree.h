@@ -6,12 +6,29 @@
 #include <optional>
 #include <iostream>
 
+enum class Color {
+    RED = 0,
+    BLACK = 1,
+};
+
 template <typename K, typename V>
 struct Node {
+    Node() {
+        this->p = nullptr;
+        this->key = K();
+        this->key = V();
+    }
+
     Node(const K& key, const V& value) {
         this->key = key;
         this->value = value;
         this->p = nullptr;
+    }
+
+    ~Node() {
+#ifdef _DEBUG
+        std::cout << "~Node(): address:" << this << " key=" << key << std::endl;
+#endif
     }
 
     void set_left(Node* node) {
@@ -29,6 +46,7 @@ struct Node {
     std::unique_ptr<Node> left;
     std::unique_ptr<Node> right;
     Node* p;
+    Color color;
     K key;
     V value;
 };
@@ -38,6 +56,9 @@ template <typename K, typename V>
 class BinaryTree {
 public:
     using TreeNode = Node<K, V>;
+
+    BinaryTree() {}
+
     BinaryTree(std::vector<std::unique_ptr<TreeNode>>&& list) {
         _init(std::move(list));
     }
@@ -55,16 +76,16 @@ public:
     }
 
     // 中序
-    void inorder(const std::function<void (const K&, const V&)>& cb) const {
+    void inorder(const std::function<void (const K&, const V&, Color)>& cb) const {
         _inorder(_root.get(), cb);
     }
 
     // 前序
-    void preorder(const std::function<void (const K&, const V&)>& cb) const {
+    void preorder(const std::function<void (const K&, const V&, Color)>& cb) const {
         _preorder(_root.get(), cb);
     }
 
-    void postorder(const std::function<void (const K&, const V&)>& cb) const {
+    void postorder(const std::function<void (const K&, const V&, Color)>& cb) const {
         _postorder(_root.get(), cb);
     }
 private:
@@ -83,11 +104,11 @@ private:
 
             auto left = it++;
             if (left == list.end()) break;
-            if (!is_null(front)) {
+            if (front != nullptr) {
                 front->left.swap(*left);
                 _q.push(front->left.get());
 
-                if (!is_null(front->left.get())) {
+                if (front->left.get() != nullptr) {
                     front->left->p = front;
                 }
             } else {
@@ -96,11 +117,11 @@ private:
 
             auto right = it++;
             if (right == list.end()) break;
-            if (!is_null(front)) {
+            if (front != nullptr) {
                 front->right.swap(*right);
                 _q.push(front->right.get());
 
-                if (!is_null(front->right.get())) {
+                if (front->right.get() != nullptr) {
                     front->right->p = front;
                 }
             } else {
@@ -110,28 +131,28 @@ private:
         }
     }
 
-    void _inorder(TreeNode* x, const std::function<void (const K&, const V&)>& cb) const {
-        if (is_null(x)) return;
+    void _inorder(TreeNode* x, const std::function<void (const K&, const V&, Color)>& cb) const {
+        if (is_leaf(x)) return;
 
         _inorder(x->left.get(), cb);
-        cb(x->key, x->value);
+        cb(x->key, x->value, x->color);
         _inorder(x->right.get(), cb);
     }
 
-    void _preorder(TreeNode* x, const std::function<void (const K&, const V&)>& cb) const {
-        if (is_null(x)) return;
+    void _preorder(TreeNode* x, const std::function<void (const K&, const V&, Color)>& cb) const {
+        if (is_leaf(x)) return;
 
-        cb(x->key, x->value);
+        cb(x->key, x->value, x->color);
         _preorder(x->left.get(), cb);
         _preorder(x->right.get(), cb);
     }
 
-    void _postorder(TreeNode* x, const std::function<void (const K&, const V&)>& cb) const {
-        if (is_null(x)) return;
+    void _postorder(TreeNode* x, const std::function<void (const K&, const V&, Color)>& cb) const {
+        if (is_leaf(x)) return;
 
         _postorder(x->left.get(), cb);
         _postorder(x->right.get(), cb);
-        cb(x->key, x->value);
+        cb(x->key, x->value, x->color);
     }
 protected:
     TreeNode* root() {
@@ -142,8 +163,12 @@ protected:
         _root.reset(x);
     }
 
+    bool is_root(TreeNode* x) {
+        return x == _root.get();
+    }
+
     bool is_left_child(TreeNode* x) {
-        if (is_null(x->p)) {
+        if (is_root(x)) {
             return true;
         }
 
@@ -156,13 +181,13 @@ protected:
     // 将 x 节点从树中摘除，但是不销毁
     // 同时返回 x 以前的父节点
     TreeNode* detach(TreeNode* x) {
-        if (is_null(x)) {
+        if (x == nullptr) {
             return nullptr;
         }
 
-        if (is_null(x->p)) {
+        if (is_root(x)) {
             _root.release();
-            return nullptr;
+            return x == nullptr ? nullptr : x->p;
         }
 
         if (x->p->left.get() == x) {
@@ -179,21 +204,32 @@ protected:
     // 替换后，子树 u 自动从树上被摘下，交返回 u
     // 注意！使用此函数前，请先将 v 从树中摘除
     TreeNode* transplant(TreeNode* u, TreeNode* v) {
+#ifdef _DEBUG
+        std::cout << "transplant u:" << u << "," << (u?u->key:-1)
+            << " v:" << v << "," << (v?v->key:-1) << std::endl;
+#endif
         auto is_left = is_left_child(u);
-        // 将 u 从树中摘除
-        auto u_p = detach(u);
 
-        if (is_null(u_p)) {
+        if (is_root(u)) {
+            // 将 u 从树中摘除
+            auto u_p = detach(u);
+#ifdef _DEBUG
+            std::cout << "u_p:" << u_p << " transplant set root" << std::endl;
+#endif
             set_root(v);
+            if (v != nullptr) {
+                v->p = u_p;
+            }
             return u;
         }
 
+        auto u_p = detach(u);
         if (is_left) {
             u_p->left.reset(v);
         } else {
             u_p->right.reset(v);
         }
-        if (!is_null(v)) {
+        if (v != nullptr) {
             v->p = u_p;
         }
         return u;
@@ -218,9 +254,12 @@ protected:
 
      */
     bool left_rotate(TreeNode* x) {
-        if (is_null(x)) return false;
+#ifdef _DEBUG
+        std::cout << "left rotate" << std::endl;
+#endif
+        if (x == nullptr) return false;
         auto y = x->right.get();
-        if (is_null(y)) return false;
+        if (y == nullptr) return false;
         // 1. detach y
         detach(y);
         // 2. x->right = b
@@ -235,10 +274,13 @@ protected:
     }
 
     bool right_rotate(TreeNode* y) {
-        if (is_null(y)) return false;
+#ifdef _DEBUG
+        std::cout << "right rotate:" << y << std::endl;
+#endif
+        if (y == nullptr) return false;
         auto x = y->left.get();
-        if (is_null(x)) return false;
-        // 1. detach y
+        if (x == nullptr) return false;
+        // 1. detach x
         detach(x);
         // 2. y->left = b
         auto b = x->right.get();
@@ -251,7 +293,7 @@ protected:
         return true;
     }
 
-    virtual bool is_null(TreeNode* x) const {
+    virtual bool is_leaf(TreeNode* x) const {
         return x == nullptr;
     }
 private:
