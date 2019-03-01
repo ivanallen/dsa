@@ -176,7 +176,7 @@ protected:
 
         // 2. right child is empty, find lowest acestor
         TreeNode* y = x->p;
-        while(!this->is_leaf(y) && y->right.get() != x) {
+        while(!this->is_leaf(y) && y->right.get() == x) {
             x = y;
             y = x->p;
         }
