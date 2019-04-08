@@ -31,7 +31,11 @@ public:
     std::optional<V> get(const K& key) {
         auto it = _m.find(key);
         if (it == _m.end()) return {};
-        return it->second->second;
+        int val = it->second->second;
+        _list.erase(it->second);
+        _list.push_front(std::make_pair(key, val));
+        _m[key] = _list.begin();
+        return val;
     }
 
     void show() {
