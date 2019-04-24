@@ -19,7 +19,7 @@ int main() {
     lru.show();
     std::cout << "get(3):" << lru.get(3).value_or(-1) << std::endl;
     lru.show();
-    std::cout << "get(9):" << lru.get(100).value_or(-1) << std::endl;
+    std::cout << "get(9):" << lru.get(9).value_or(-1) << std::endl;
     lru.show();
 
     return 0;
