@@ -246,7 +246,7 @@ public:
         current->prev = before;
         current->next = after;
         after->prev = current;
-        return false;
+        return true;
     }
 
     void increment() {
