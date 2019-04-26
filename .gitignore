@@ -6,3 +6,6 @@
 # cmake
 .idea
 cmake-*
+
+#build
+build/*
