@@ -90,7 +90,7 @@ public:
     // 如果有重复值，优先旋转深度最小最靠左的那个。
     // FIXME: v 如果没有实现和 ostream 的对接，这里 oss 会编译失败。
     void left_rotate(const T& v) {
-        auto node = get(v);
+        auto node = find(v);
         if (!node) {
             std::stringstream oss;
             oss << "cannot find node `" << v <<  "`";
@@ -107,7 +107,7 @@ public:
 
     // FIXME: v 如果没有实现和 ostream 的对接，这里 oss 会编译失败。
     void right_rotate(const T& v) {
-        auto node = get(v);
+        auto node = find(v);
         if (!node) {
             std::stringstream oss;
             oss << "cannot find node `" << v <<  "`";
@@ -123,13 +123,13 @@ public:
 
     // TODO
     std::optional<T> predecessor(const T& v) {
-        auto node = get(v);
+        auto node = find(v);
         return {};
     }
 
     // TODO
     std::optional<T> successor(const T& v) {
-        auto node = get(v);
+        auto node = find(v);
         return {};
     }
 
@@ -368,7 +368,9 @@ protected:
         y->p = x;
     }
 
-    Node* get(const T& v) {
+    // 普通的二叉树只能顺序查找
+    // 子类可以重写此方法，以完成高效查找
+    virtual Node* find(const T& v) {
         if (!_root) return nullptr;
         std::queue<Node*> todo;
 
