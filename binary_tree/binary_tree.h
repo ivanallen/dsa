@@ -290,6 +290,7 @@ protected:
 
     // 使用 v 替换 u
     // 即把 u/v 从树中摘下，然后把 v 放到原来 u 的位置
+    // FIXME: 有些 transplant 是无法成功的。比如：v 是 u 的祖先
     void transplant(Node* u, Node* v) {
         // 禁止
         assert(u != nullptr);
