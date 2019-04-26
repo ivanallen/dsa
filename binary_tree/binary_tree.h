@@ -12,6 +12,7 @@
 #include <optional>
 #include <iostream>
 #include <sstream>
+#include <cassert>
 
 // TODO: 抽取类 class Color
 enum ColorType {
@@ -60,6 +61,8 @@ public:
         if (!_root) return;
         std::queue<Node*> todo;
 
+        todo.push(_root);
+
         while (!todo.empty()) {
             auto node = todo.front();
             todo.pop();
@@ -81,6 +84,44 @@ public:
         inorder([&cb](Node* node) {
             cb(*node->value);
         });
+    }
+
+    // 直接根据值进行旋转。
+    // 如果有重复值，优先旋转深度最小最靠左的那个。
+    void left_rotate(const T& v) {
+        if (!_root) return;
+        std::queue<Node*> todo;
+
+        todo.push(_root);
+
+        while (!todo.empty()) {
+            auto node = todo.front();
+            todo.pop();
+            if (*node->value == v) {
+                left_rotate(node);
+                break;
+            }
+            if (node->left) todo.push(node->left);
+            if (node->right) todo.push(node->right);
+        }
+    }
+
+    void right_rotate(const T& v) {
+        if (!_root) return;
+        std::queue<Node*> todo;
+
+        todo.push(_root);
+
+        while (!todo.empty()) {
+            auto node = todo.front();
+            todo.pop();
+            if (*node->value == v) {
+                right_rotate(node);
+                break;
+            }
+            if (node->left) todo.push(node->left);
+            if (node->right) todo.push(node->right);
+        }
     }
 
     // 生成前序和中序序列返回
@@ -204,6 +245,104 @@ private:
         }
     }
 
+    // 将子树 u 从原树中摘下
+    // 返回 u 的父节点
+    // 注意 detach 操作一定要干净，即脱离后，不应该与原树有任何指针来往
+    Node* detach(Node* u, bool* left = nullptr) {
+        assert(u != nullptr);
+        auto u_p = u->p;
+        if (!u_p) return nullptr;
+
+        u->p = nullptr;
+        if (u_p->left == u) {
+            if (left) *left = true;
+            u_p->left = nullptr;
+        } else {
+            if (left) *left = false;
+            u_p->right = nullptr;
+        }
+        return u_p;
+    }
+
+    // 使用 v 替换 u
+    // 即把 u/v 从树中摘下，然后把 v 放到原来 u 的位置
+    void transplant(Node* u, Node* v) {
+        // 禁止
+        assert(u != nullptr);
+        assert(u != v);
+
+        bool left = false;
+        auto u_p = detach(u, &left);
+        detach(v);
+
+        if (u_p) {
+            if (left) {
+                u_p->left = v;
+            } else {
+                u_p->right = v;
+            }
+        } else {
+            // 说明 u 是 root
+            _root = v;
+        }
+
+        if (v) v->p = u_p;
+    }
+
+    // 对 x 左旋
+    /*
+            |
+            x
+          /   \
+         a     y
+             /   \
+            b     c
+
+               || 
+
+                |
+                y
+              /   \
+             x     c
+           /   \
+          a     b
+
+     */
+    void left_rotate(Node* x) {
+        assert(x != nullptr);
+        assert(x->right != nullptr);
+
+        auto y = x->right;
+        transplant(x, y);
+
+        auto b = y->left;
+
+        if (b) {
+            detach(b);
+            x->right = b;
+            b->p = x;
+        }
+        y->left = x;
+        x->p = y;
+    }
+
+    void right_rotate(Node* y) {
+        assert(y != nullptr);
+        assert(y->left != nullptr);
+
+        auto x = y->left;
+        transplant(y, x);
+
+        auto b = x->right;
+        if (b) {
+            detach(b);
+            y->left = b;
+            b->p = y;
+        }
+
+        x->right = y;
+        y->p = x;
+    }
 private:
     Node* _root = nullptr;
 };

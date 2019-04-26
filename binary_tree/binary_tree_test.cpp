@@ -1,4 +1,4 @@
-#include <binarytree.h>
+#include <binary_tree.h>
 
 using Tree = BinaryTree<int>;
 
@@ -20,5 +20,19 @@ int main() {
     )"; 
 
     std::cout << tree_graph << std::endl;
-    std::cout << tree << std::endl;
+    std::cout << tree << std::endl << std::endl;
+
+    // 经过旋转后，变成向左延展的链
+    tree.left_rotate(3);
+    tree.right_rotate(13);
+    tree.right_rotate(18);
+
+    tree.left_rotate(6);
+    tree.left_rotate(8);
+    tree.left_rotate(9);
+    tree.left_rotate(15);
+    tree.left_rotate(17);
+    tree.left_rotate(18);
+
+    std::cout << tree << std::endl << std::endl;
 }
