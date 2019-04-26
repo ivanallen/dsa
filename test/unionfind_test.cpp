@@ -1,5 +1,5 @@
 #include <iostream>
-#include <unionfind.h>
+#include "../include/unionfind.h"
 
 void test(UnionFind& uf, int a, int b) {
     std::cout << "connect(" << a << ',' << b << ") = " << uf.connect(a,b) << std::endl;
