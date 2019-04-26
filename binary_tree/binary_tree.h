@@ -88,6 +88,7 @@ public:
 
     // 直接根据值进行旋转。
     // 如果有重复值，优先旋转深度最小最靠左的那个。
+    // FIXME: v 如果没有实现和 ostream 的对接，这里 oss 会编译失败。
     void left_rotate(const T& v) {
         auto node = get(v);
         if (!node) {
@@ -104,6 +105,7 @@ public:
         left_rotate(node);
     }
 
+    // FIXME: v 如果没有实现和 ostream 的对接，这里 oss 会编译失败。
     void right_rotate(const T& v) {
         auto node = get(v);
         if (!node) {
@@ -167,7 +169,7 @@ public:
         oss << "]";
         return oss.str();
     }
-private:
+protected:
     // 从数组构建二叉树
     // 这个函数可以很方便的自动构建二叉树，适合自动化测试
     // 数组保存的是一个完全二叉树（包含空节点）
@@ -392,7 +394,8 @@ private:
     Node* predecessor(Node* u) {
         return nullptr;
     }
-private:
+
+protected:
     Node* _root = nullptr;
 };
 
