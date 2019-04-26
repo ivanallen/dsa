@@ -89,39 +89,46 @@ public:
     // 直接根据值进行旋转。
     // 如果有重复值，优先旋转深度最小最靠左的那个。
     void left_rotate(const T& v) {
-        if (!_root) return;
-        std::queue<Node*> todo;
-
-        todo.push(_root);
-
-        while (!todo.empty()) {
-            auto node = todo.front();
-            todo.pop();
-            if (*node->value == v) {
-                left_rotate(node);
-                break;
-            }
-            if (node->left) todo.push(node->left);
-            if (node->right) todo.push(node->right);
+        auto node = get(v);
+        if (!node) {
+            std::stringstream oss;
+            oss << "cannot find node `" << v <<  "`";
+            throw std::runtime_error(oss.str());
         }
+
+        if (node->right == nullptr) {
+            std::stringstream oss;
+            oss << "cannot left rotate at node `" << v <<  "`";
+            throw std::runtime_error(oss.str());
+        }
+        left_rotate(node);
     }
 
     void right_rotate(const T& v) {
-        if (!_root) return;
-        std::queue<Node*> todo;
-
-        todo.push(_root);
-
-        while (!todo.empty()) {
-            auto node = todo.front();
-            todo.pop();
-            if (*node->value == v) {
-                right_rotate(node);
-                break;
-            }
-            if (node->left) todo.push(node->left);
-            if (node->right) todo.push(node->right);
+        auto node = get(v);
+        if (!node) {
+            std::stringstream oss;
+            oss << "cannot find node `" << v <<  "`";
+            throw std::runtime_error(oss.str());
         }
+        if (node->left== nullptr) {
+            std::stringstream oss;
+            oss << "cannot right rotate at node `" << v <<  "`";
+            throw std::runtime_error(oss.str());
+        }
+        right_rotate(node);
+    }
+
+    // TODO
+    std::optional<T> predecessor(const T& v) {
+        auto node = get(v);
+        return {};
+    }
+
+    // TODO
+    std::optional<T> successor(const T& v) {
+        auto node = get(v);
+        return {};
     }
 
     // 生成前序和中序序列返回
@@ -201,7 +208,7 @@ private:
         }
     }
 
-    // void cb(K&, V&)
+    // void cb(Node*)
     // 迭代版本中序遍历
     // 栈后访问法
     template <typename FUNC>
@@ -245,6 +252,21 @@ private:
         }
     }
 
+    /*
+            u_p
+             |
+             u
+           /   \
+          a     c
+
+             ||
+
+             u_p
+
+              u
+            /   \
+           a     c
+     */
     // 将子树 u 从原树中摘下
     // 返回 u 的父节点
     // 注意 detach 操作一定要干净，即脱离后，不应该与原树有任何指针来往
@@ -289,7 +311,6 @@ private:
         if (v) v->p = u_p;
     }
 
-    // 对 x 左旋
     /*
             |
             x
@@ -308,6 +329,7 @@ private:
           a     b
 
      */
+    // 对 x 左旋
     void left_rotate(Node* x) {
         assert(x != nullptr);
         assert(x->right != nullptr);
@@ -342,6 +364,33 @@ private:
 
         x->right = y;
         y->p = x;
+    }
+
+    Node* get(const T& v) {
+        if (!_root) return nullptr;
+        std::queue<Node*> todo;
+
+        todo.push(_root);
+
+        while (!todo.empty()) {
+            auto node = todo.front();
+            todo.pop();
+            if (*node->value == v) {
+                return node;
+            }
+            if (node->left) todo.push(node->left);
+            if (node->right) todo.push(node->right);
+        }
+        return nullptr;
+    }
+
+    // TODO:
+    Node* successor(Node* u) {
+        return nullptr;
+    }
+
+    Node* predecessor(Node* u) {
+        return nullptr;
     }
 private:
     Node* _root = nullptr;
