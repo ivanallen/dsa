@@ -1,4 +1,4 @@
-#include <binary_tree.h>
+#include "../include/binary_tree.h"
 
 using Tree = BinaryTree<int>;
 

@@ -2,3 +2,10 @@
 *.un~
 *.dSYM
 *_test
+
+# cmake
+.idea
+cmake-*
+
+#build
+build/*

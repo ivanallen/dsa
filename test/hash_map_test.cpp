@@ -1,6 +1,6 @@
 #include <string>
 #include <iostream>
-#include <hashmap.h>
+#include "../include/hashmap.h"
 
 int main() {
     HashMap<int, std::string> h;

@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include "graph.h"
+#include "../include/graph.h"
 
 /*
 int test() {
