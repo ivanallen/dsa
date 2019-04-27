@@ -3,7 +3,7 @@ project(dsa)
 
 include(ExternalProject)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 set( CMAKE_BUILD_TYPE "Debug")
 
@@ -12,7 +12,6 @@ include_directories(include)
 set(DSA_SRC_FILES
 #        "src/kmp.cpp"
         "src/lcs.cpp")
-
 
 # Add gtest dependency
 set(GTEST_VERSION "1.8.0")
@@ -42,7 +41,7 @@ set(GTEST_CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -DCMAKE_INSTALL_PREFIX=${GTEST_PREFIX}
         -DCMAKE_CXX_FLAGS=${GTEST_CMAKE_CXX_FLAGS})
 
- set(GTEST_URL_MD5 "16877098823401d1bf2ed7891d7dce36")
+set(GTEST_URL_MD5 "16877098823401d1bf2ed7891d7dce36")
 
 ExternalProject_Add(googletest_ep
         PREFIX external/googletest
@@ -57,6 +56,10 @@ ExternalProject_Add(googletest_ep
 add_library(dsa SHARED ${DSA_SRC_FILES})
 
 add_executable(demo_test test/demo_test.cpp)
+
+#TODO: 怎么生成到 examples/binary_tree 目录下
+add_executable(basic_examples examples/binary_tree/basic_example.cpp)
 add_dependencies(demo_test dsa googletest_ep)
+
 include_directories(SYSTEM ${GTEST_INCLUDE_DIR})
 target_link_libraries(demo_test ${GTEST_STATIC_LIB} ${GTEST_MAIN_STATIC_LIB} ${GMOCK_MAIN_STATIC_LIB} pthread)
