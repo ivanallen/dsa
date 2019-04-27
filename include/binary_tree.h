@@ -8,6 +8,9 @@
 // 所有二叉树继承此基类
 // 另一个 binary_tree.h 要删除掉，实现的复杂且不合理
 
+// TODO: 我们需要一个 tree 迭代器
+// TODO: 我们需要能可视化一棵树
+
 #pragma once
 
 #include <memory>
@@ -411,15 +414,6 @@ protected:
             if (node->left) todo.push(node->left);
             if (node->right) todo.push(node->right);
         }
-        return nullptr;
-    }
-
-    // TODO:
-    Node* successor(Node* u) {
-        return nullptr;
-    }
-
-    Node* predecessor(Node* u) {
         return nullptr;
     }
 
