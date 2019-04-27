@@ -7,7 +7,7 @@ mkdir -p build
 pushd build
 
 cmake ..
-make -j 8
+make -j `grep -c ^processor /proc/cpuinfo`
 
 popd
 
