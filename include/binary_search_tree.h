@@ -28,7 +28,7 @@ public:
 
     BinarySearchTree() {}
     BinarySearchTree(const std::vector<std::optional<std::pair<K, V>>>& list) :
-        BinaryTree<std::pair<K, V>>(std::move(list)) {}
+        BinaryTree<std::pair<K, V>>(list) {}
 
     std::optional<V> search(const K& key, int* compare_count = nullptr) {
         Node* node = nullptr;
