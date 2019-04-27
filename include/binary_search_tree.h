@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2019, ivan_allen@163.com 
+ * All rights reserved.
+ */
+
+// 二叉搜索树类
 #pragma once
 
 #include <memory>
@@ -7,6 +13,8 @@
 #include <iostream>
 
 #include <binary_tree.h>
+
+namespace dsa {
 
 template <typename K, typename V>
 class BinarySearchTree : public BinaryTree<std::pair<K, V>> {
@@ -42,3 +50,5 @@ public:
     }
 protected:
 };
+
+} // namespace dsa
