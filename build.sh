@@ -2,15 +2,7 @@
 
 set -e
 
-# make sure that we are under project folder
-mkdir -p build
-pushd build
-
-cmake ..
-make -j `grep -c ^processor /proc/cpuinfo`
-
-popd
-
+# get system type
 unamestr="$(uname)"
 if [[ "$unamestr" == "Linux" ]]; then
     LIBRARY_NAME_SUFFIX=so
@@ -19,6 +11,19 @@ elif [[ "$unamestr" == "Darwin" ]]; then
 else
     LIBRARY_NAME_SUFFIX=dll
 fi
+
+# make sure that we are under project folder
+mkdir -p build
+pushd build
+
+cmake ..
+if [[ "$unamestr" == "Darwin" ]]; then
+    make -j `sysctl -n machdep.cpu.thread_count`
+else
+    make -j `grep -c ^processor /proc/cpuinfo`
+fi
+
+popd
 
 # install to build/lib
 mkdir -p build/lib/lib64
