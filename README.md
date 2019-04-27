@@ -14,5 +14,5 @@ DSA 的主要优势：
 - QQ:610441700
 
 - 钉钉群
-<img src="https://github.com/ivanallen/dsa/blob/integrate_cmake_gtest/docs/images/DingDingGroup.JPG"  height="900" width="150">
+<img src="https://github.com/ivanallen/dsa/blob/integrate_cmake_gtest/docs/images/DingDingGroup.png"  height="309" width="309">
 
