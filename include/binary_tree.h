@@ -1,6 +1,7 @@
 /*
- * Copyright (c) 2019, ivan_allen@163.com 
+ * Copyright (c) 2019 DSA authors.
  * All rights reserved.
+ * Authors: Allen
  */
 
 // 二叉树基类
@@ -95,7 +96,7 @@ public:
 
     // 直接根据值进行旋转。
     // 如果有重复值，优先旋转深度最小最靠左的那个。
-    // FIXME: v 如果没有实现和 ostream 的对接，这里 oss 会编译失败。
+    // WARNING: v 如果没有实现和 ostream 的对接，这里 oss 会编译失败。
     void left_rotate(const T& v) {
         auto node = find(v);
         if (!node) {
@@ -112,7 +113,7 @@ public:
         left_rotate(node);
     }
 
-    // FIXME: v 如果没有实现和 ostream 的对接，这里 oss 会编译失败。
+    // WARNING: v 如果没有实现和 ostream 的对接，这里 oss 会编译失败。
     void right_rotate(const T& v) {
         auto node = find(v);
         if (!node) {
@@ -146,35 +147,53 @@ public:
         std::stringstream oss;
         oss << "preorder:[";
         bool first = true;
-        preorder([&oss, &first](Node* node) {
+        preorder([&oss, &first, this](Node* node) {
             if (first) {
                 oss << color(node->color);
-                oss << *node->value;
+                oss << dump(*node->value);
                 oss << color(ColorType::NONE);
                 first = false;
                 return;
             }
             oss << "," << color(node->color);
-            oss << *node->value;
+            oss << dump(*node->value);
             oss << color(ColorType::NONE);
         });
         oss << "]" << std::endl;
 
         oss << "inorder: [";
         first = true;
-        inorder([&oss, &first](Node* node) {
+        inorder([&oss, &first, this](Node* node) {
             if (first) {
                 oss << color(node->color);
-                oss << *node->value;
+                oss << dump(*node->value);
                 oss << color(ColorType::NONE);
                 first = false;
                 return;
             }
             oss << "," << color(node->color);
-            oss << *node->value;
+            oss << dump(*node->value);
             oss << color(ColorType::NONE);
         });
         oss << "]";
+        return oss.str();
+    }
+
+    template <typename U>
+    std::string dump(const U& val) const {
+        std::stringstream oss;
+        oss << val;
+        return oss.str();
+    }
+
+    // BinaryTree::dump 为 pair 特化了一个版本
+    // 主要解决 <key, value> 无法 dump 时的编译错误
+    // 当然，如果 Key 和 Value 本身无法序列化，编译会报错
+    // 因此，UserType 要想使用 dump 功能，一定要实现序列化。
+    template <typename Key, typename Value>
+    std::string dump(const std::pair<Key, Value>& val) const {
+        std::stringstream oss;
+        oss << "(" << val.first << "," << val.second << ")";
         return oss.str();
     }
 protected:
@@ -379,7 +398,7 @@ protected:
 
     // 普通的二叉树只能顺序查找
     // 子类可以重写此方法，以完成高效查找
-    virtual Node* find(const T& v) {
+    Node* find(const T& v) {
         if (!_root) return nullptr;
         std::queue<Node*> todo;
 

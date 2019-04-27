@@ -57,8 +57,9 @@ add_library(dsa SHARED ${DSA_SRC_FILES})
 
 add_executable(demo_test test/demo_test.cpp)
 
-#TODO: 怎么生成到 examples/binary_tree 目录下
-add_executable(basic_examples examples/binary_tree/basic_example.cpp)
+#TODO: 怎么生成到 examples/tree 目录下
+add_executable(binary_tree_examples examples/tree/binary_tree_example.cpp)
+add_executable(binary_search_tree_examples examples/tree/binary_search_tree_example.cpp)
 add_dependencies(demo_test dsa googletest_ep)
 
 include_directories(SYSTEM ${GTEST_INCLUDE_DIR})
