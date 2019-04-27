@@ -25,6 +25,9 @@ public:
     // https://stackoverflow.com/questions/4643074/why-do-i-have-to-access-template-base-class-members-through-the-this-pointer/4643295
     using BinaryTree<std::pair<K, V>>::_root;
     using BinaryTree<std::pair<K, V>>::left_rotate;
+    using BinaryTree<std::pair<K, V>>::right_rotate;
+
+    using ValueType = std::pair<K, V>;
 
     BinarySearchTree() {}
     explicit BinarySearchTree(const std::vector<std::optional<std::pair<K, V>>>& list) :
@@ -45,21 +48,39 @@ public:
         Node* node = nullptr;
         std::tie(node, std::ignore) = find(key);
         if (!node) return;
-        if (node->right == nullptr) return;
+        if (node->right) return;
         // 基类 left_roate
         left_rotate(node);
     }
 
-    // TODO: 实现下面这些
     void right_rotate(const K& key) {
-    }
-    
-    // 求最小
-    std::optional<K> minimum() {
+        Node* node = nullptr;
+        std::tie(node, std::ignore) = find(key);
+        if (!node) return;
+        if (!node->left) return;
+        right_rotate(node);
     }
 
-    // 求最大
-    std::optional<K> maximum() {
+    std::optional<std::pair<K, V>> successor(const K& key) const {
+        Node* node = nullptr;
+        std::tie(node, std::ignore) = find(key);
+        // FIXME: Maybe we need throw exception here.
+        if (!node) return std::nullopt;
+
+        auto s = successor(node);
+        if (!s) return std::nullopt;
+        return std::make_pair(s->value->first, s->value->second);
+    }
+
+    std::optional<std::pair<K, V>> predecessor(const K& key) const {
+        Node* node = nullptr;
+        std::tie(node, std::ignore) = find(key);
+        // FIXME: Maybe we need throw exception here.
+        if (!node) return std::nullopt;
+
+        auto s = predecessor(node);
+        if (!s) return std::nullopt;
+        return std::make_pair(s->value->first, s->value->second);
     }
 
     template <typename Key, typename Value>
@@ -89,6 +110,76 @@ protected:
             }
         }
         return std::make_pair(nullptr, cmpcnt);
+    }
+
+    // 查询子树 u 中的最小节点
+    Node* minimum(Node* u) const {
+        assert(u != nullptr);
+        while (u->left) {
+            u = u->left;
+        }
+        return u;
+    }
+
+    // 查询子树 u 中的最大节点
+    Node* maximum(Node* u) const {
+        assert(u != nullptr);
+        while (u->right) {
+            u = u->right;
+        }
+        return u;
+    }
+
+    /*
+      case 1: u 没有右孩子
+
+            u
+          /   \
+         a     b
+
+      case 2: u 有右孩子
+
+            u.p.p <- we found u's successor
+             /
+           u.p
+          /   \
+         a     u
+              /
+             b
+     */
+    // 我们说 u 的后继，指经过中序遍历后，排在 u 后面的那个元素。
+    Node* successor(Node* u) const {
+        assert(u != nullptr);
+        // case 1: u 有右孩子
+        if (u->right) {
+            return minimum(u->right);
+        }
+        // case 2: u 没有右孩子
+        // 对于没有右孩子的 u，我们称 u 为子树 u.p 的右界(最大节点)。
+        // 如果 u.p 仍然是 u.p.p 的右孩子，则 u 同样也为子树 u.p.p 的右界
+        // 不断向上搜寻，直到 u 不是 u.p.p...p 的右界为止
+        auto v = u->p;
+        while (v && v->right == u) {
+            u = v;
+            v = u->p;
+        }
+        return v;
+    }
+
+    // 查找前驱，successor 的镜像算法
+    Node* predecessor(Node* u) const {
+        assert(u != nullptr);
+        // case 1: u 有左孩子
+        if (u->left) {
+            return maximum(u->left);
+        }
+        // case 2: u 没有左孩子。u 是 u.p 的左界
+        auto v = u->p;
+        while (v && v->left == u) {
+            u = v;
+            v = u->p;
+        }
+        return v;
     }
 };
 
