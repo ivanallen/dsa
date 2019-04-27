@@ -19,15 +19,15 @@ int main() {
 
     for (auto& e : values) {
         if (e) {
-            nodes.push_back(std::make_pair(*e, *e * 2));
+            nodes.emplace_back(std::make_pair(*e, *e * 2));
         } else {
-            nodes.push_back({});
+            nodes.emplace_back(std::nullopt);
         }
     }
 
     Tree tree(nodes);
 
-    std::string tree_graph = R"(  
+    const std::string tree_graph = R"(  
                            15
                         /     \
                       /         \

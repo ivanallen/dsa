@@ -27,17 +27,15 @@ public:
     using BinaryTree<std::pair<K, V>>::left_rotate;
 
     BinarySearchTree() {}
-    BinarySearchTree(const std::vector<std::optional<std::pair<K, V>>>& list) :
+    explicit BinarySearchTree(const std::vector<std::optional<std::pair<K, V>>>& list) :
         BinaryTree<std::pair<K, V>>(list) {}
 
-    std::optional<V> search(const K& key, int* compare_count = nullptr) {
+    std::optional<V> search(const K& key, int* compare_count = nullptr) const {
         Node* node = nullptr;
         int cmpcnt = 0;
 
         std::tie(node, cmpcnt) = find(key);
-
         if (compare_count) *compare_count = cmpcnt;
-
         if (!node) return {};
 
         return node->value->second;
@@ -73,7 +71,7 @@ public:
     }
 protected:
     // 返回查找到的节点，以及比较次数
-    std::pair<Node*, int> find(const K& key) {
+    std::pair<Node*, int> find(const K& key) const {
         if (!_root) return std::make_pair(nullptr, 0);
 
         int cmpcnt = 0;

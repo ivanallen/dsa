@@ -52,7 +52,7 @@ public:
     BinaryTree() {}
 
     // 从数组构建二叉树
-    BinaryTree(const std::vector<std::optional<T>>& list) {
+    explicit BinaryTree(const std::vector<std::optional<T>>& list) {
         std::vector<Node*> nodes;
         for (auto& node : list) {
             if (node) {
@@ -181,9 +181,7 @@ public:
 
     template <typename U>
     std::string dump(const U& val) const {
-        std::stringstream oss;
-        oss << val;
-        return oss.str();
+        return std::stringstream(val).str();
     }
 
     // BinaryTree::dump 为 pair 特化了一个版本
