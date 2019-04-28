@@ -4,7 +4,7 @@
  * Authors: Allen
  */
 
-// 二叉搜索树类
+// 红黑树
 #pragma once
 
 #include <memory>
