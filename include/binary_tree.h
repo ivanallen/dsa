@@ -417,6 +417,13 @@ protected:
         return nullptr;
     }
 
+    template <typename U>
+    Node* create_node(U&& u) {
+        return new Node(std::forward<U>(u));
+    }
+    void release_node(Node* node) {
+        delete node;
+    }
 protected:
     Node* _root = nullptr;
 };

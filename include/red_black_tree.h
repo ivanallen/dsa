@@ -11,9 +11,8 @@
 #include <queue>
 #include <vector>
 #include <optional>
-#include <iostream>
 
-#include <binary_search_tree.h>
+#include "binary_search_tree.h"
 
 namespace dsa {
 
@@ -24,6 +23,7 @@ public:
     using BinarySearchTree<K, V>::_root;
     using BinarySearchTree<K, V>::left_rotate;
     using BinarySearchTree<K, V>::right_rotate;
+    using BinarySearchTree<K, V>::create_node;
 
     RedBlackTree() {}
 
@@ -31,7 +31,7 @@ public:
     // 不允许插入重复 key
     template <typename Key, typename Value>
     bool insert(Key&& key, Value&& val) {
-        auto z = new Node(std::make_pair(std::forward<Key>(key), std::forward<Value>(val)));
+        auto z = create_node(std::make_pair(std::forward<Key>(key), std::forward<Value>(val)));
         z->color = ColorType::RED;
 
         if (!_root) {
@@ -54,7 +54,7 @@ public:
             }
         }
 
-        // 到此 u 为空，v 表示叶子节点。s 应该插入 u 下面。
+        // 到此 u 为空，v 表示叶子节点。z 应该插入 u 下面。
         if (key < v->value->first) {
             v->left = z;
         } else {
