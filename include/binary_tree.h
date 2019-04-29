@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <queue>
 #include <stack>
@@ -184,7 +185,9 @@ public:
 
     template <typename U>
     std::string dump(const U& val) const {
-        return std::stringstream(val).str();
+        std::stringstream oss;
+        oss << val;
+        return oss.str();
     }
 
     // BinaryTree::dump 为 pair 特化了一个版本
