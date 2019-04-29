@@ -1,5 +1,20 @@
 /*
-Expressions calculation��such as 5 + 12 / ��1+2��
+Expressions calculation，such as 5 + 12 / （1+2）
+
+
+接受一个正确的四则表达式作为输入，输出计算结果
+example:
+[input :] 5 + 12 / （1+2）
+[output :] 9
+
+计算思路：
+申请一个数据栈 ，一个操作符栈
+读取表达式：
+	1遇到操作数，数据直接入栈
+	2遇到操作符，若当前操作符比栈顶操作符优先级低，则从数据栈取操作数运算并将结果入栈，否则操作符直接入栈；
+		表达式读取结束，以此从数据栈取出数据，操作符栈取操作符，并将结果入栈
+		最终操作符栈为空，数据栈只有一个数，即为最终结果
+
 */
 
 #include <iostream>
@@ -18,7 +33,7 @@ public:
 	Exp(){
 		v = 0;
 	}
-	//��ȡ���������ʽ 
+	//读取并计算表达式 
 	double calinput(){
 		do{
 			readdata();
@@ -32,7 +47,7 @@ public:
 		while(!(cin >> v)){
 			cin.clear();
 			cin >> op;
-			if(op!='(') throw string("�ڸ�������ֵ�ĵط�������") + op;
+			if(op!='(') throw string("在该遇到数值的地方遇到了") + op;
 			ops.push(op); 
 		}
 		ds.push(v);
@@ -54,8 +69,8 @@ public:
 		}
 		
 		if(op=='\n') return false;
-		if(strchr("+-*/",op) == NULL) //��Ч�����
-			throw string("��Ч�����") + op;
+		if(strchr("+-*/",op) == NULL) //无效运算符
+			throw string("无效运算符") + op;
 			
 		while(!ops.empty() && ops.top() != '(' && !prior(op,ops.top())){
 			rh = ds.top();ds.pop();
@@ -76,7 +91,7 @@ public:
 			ops.pop();
 		}
 		
-		if(ds.size() != 1) throw string("��Ч�ı���ʽ");
+		if(ds.size() != 1) throw string("无效的表达式");
 		v = ds.top();
 		ds.pop();
 	} 
