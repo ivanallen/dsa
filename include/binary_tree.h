@@ -133,13 +133,13 @@ public:
     }
 
     // TODO
-    std::optional<T> predecessor(const T& v) {
+    std::optional<T> predecessor(const T& v) const {
         auto node = find(v);
         return {};
     }
 
     // TODO
-    std::optional<T> successor(const T& v) {
+    std::optional<T> successor(const T& v) const {
         auto node = find(v);
         return {};
     }
@@ -300,7 +300,7 @@ protected:
     // 将子树 u 从原树中摘下
     // 返回 u 的父节点
     // 注意 detach 操作一定要干净，即脱离后，不应该与原树有任何指针来往
-    Node* detach(Node* u, bool* left = nullptr) {
+    Node* detach(Node* u, bool* left = nullptr) const {
         assert(u != nullptr);
         auto u_p = u->p;
         if (!u_p) return nullptr;
@@ -399,7 +399,7 @@ protected:
 
     // 普通的二叉树只能顺序查找
     // 子类可以重写此方法，以完成高效查找
-    Node* find(const T& v) {
+    Node* find(const T& v) const {
         if (!_root) return nullptr;
         std::queue<Node*> todo;
 
@@ -418,10 +418,11 @@ protected:
     }
 
     template <typename U>
-    Node* create_node(U&& u) {
+    Node* create_node(U&& u) const {
         return new Node(std::forward<U>(u));
     }
-    void release_node(Node* node) {
+    void release_node(Node* node) const {
+        assert(node != nullptr);
         delete node;
     }
 protected:
