@@ -11,7 +11,6 @@
 #include <queue>
 #include <vector>
 #include <optional>
-#include <iostream>
 
 #include "binary_search_tree.h"
 
