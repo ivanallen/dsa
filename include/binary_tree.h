@@ -329,7 +329,8 @@ protected:
 
         bool left = false;
         auto u_p = detach(u, &left);
-        detach(v);
+
+        if (v) detach(v);
 
         if (u_p) {
             if (left) {

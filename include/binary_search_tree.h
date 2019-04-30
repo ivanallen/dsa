@@ -180,6 +180,10 @@ protected:
         }
         return v;
     }
+
+    void remove(Node* u) {
+        assert(u != nullptr);
+    }
 };
 
 } // namespace dsa
