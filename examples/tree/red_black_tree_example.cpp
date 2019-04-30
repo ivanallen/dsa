@@ -18,14 +18,20 @@ std::ostream& operator<<(std::ostream& out, const std::pair<int, int>& val) {
 
 int main() {
     Tree tree;
-    tree.insert(50, 200);
-    tree.insert(100, 200);
-    tree.insert(150, 300);
-    tree.insert(200, 400);
-    tree.insert(20, 40);
-    tree.insert(60, 120);
-    tree.insert(10, 20);
-    tree.insert(70, 140);
+
+    for (int i = 10; i <= 100; i += 10) {
+        tree.insert(i, 2*i);
+    }
+    for (int i = 5; i <= 95; i += 10) {
+        tree.insert(i, 2*i);
+    }
     std::cout << tree << std::endl << std::endl;
+
+
+    for (int i = 5; i <= 100; i += 5) {
+        tree.remove(i);
+        std::cout << "Remove:" << i << std::endl;
+        std::cout << tree << std::endl << std::endl;
+    }
     return 0;
 }
