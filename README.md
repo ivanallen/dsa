@@ -15,7 +15,7 @@ DSA is a library of basic and advanced data structure, as well as common algorit
 
 ```
 $ bash ./build.sh
-$ cd build & make test
+$ cd build && make test
 ```
 
 ## Example
