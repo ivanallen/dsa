@@ -44,6 +44,7 @@ std::string color(ColorType c) {
     case ColorType::BLACK:
         return "\x1b[0m";
     }
+    return "";
 }
 
 // 二叉树
@@ -56,11 +57,11 @@ public:
     BinaryTree() {}
 
     // 从数组构建二叉树
-    explicit BinaryTree(const std::vector<std::optional<T>>& list) {
+    explicit BinaryTree(const std::vector<std::optional<T>>& list) noexcept {
         std::vector<Node*> nodes;
         for (auto& node : list) {
             if (node) {
-                nodes.push_back(new Node(*node));
+                nodes.push_back(create_node(*node));
             } else {
                 nodes.push_back(nullptr);
             }
@@ -68,7 +69,7 @@ public:
         init(nodes);
     }
 
-    virtual ~BinaryTree() {
+    virtual ~BinaryTree() noexcept {
         // 不能递归删除，可能会爆栈
         if (!_root) return;
         std::queue<Node*> todo;
@@ -80,7 +81,7 @@ public:
             todo.pop();
             if (node->left) todo.push(node->left);
             if (node->right) todo.push(node->right);
-            delete node;
+            release_node(node);
         }
         _root = nullptr;
     }
@@ -133,51 +134,41 @@ public:
         right_rotate(node);
     }
 
-    // TODO
-    std::optional<T> predecessor(const T& v) const {
-        auto node = find(v);
-        return {};
-    }
-
-    // TODO
-    std::optional<T> successor(const T& v) const {
-        auto node = find(v);
-        return {};
-    }
-
     // 生成前序和中序序列返回
     // TODO: 或许可以做成可视化？
-    std::string dump() const {
+    std::string dump(bool show_color = true) const {
         std::stringstream oss;
         oss << "preorder:[";
         bool first = true;
-        preorder([&oss, &first, this](Node* node) {
+        preorder([&oss, &first, show_color, this](Node* node) {
             if (first) {
-                oss << color(node->color);
+                if (show_color) oss << color(node->color);
                 oss << dump(*node->value);
-                oss << color(ColorType::NONE);
+                if (show_color) oss << color(ColorType::NONE);
                 first = false;
                 return;
             }
-            oss << "," << color(node->color);
+            oss << ",";
+            if (show_color) oss << color(node->color);
             oss << dump(*node->value);
-            oss << color(ColorType::NONE);
+            if (show_color) oss << color(ColorType::NONE);
         });
         oss << "]" << std::endl;
 
         oss << "inorder: [";
         first = true;
-        inorder([&oss, &first, this](Node* node) {
+        inorder([&oss, &first, show_color, this](Node* node) {
             if (first) {
-                oss << color(node->color);
+                if (show_color) oss << color(node->color);
                 oss << dump(*node->value);
-                oss << color(ColorType::NONE);
+                if (show_color) oss << color(ColorType::NONE);
                 first = false;
                 return;
             }
-            oss << "," << color(node->color);
+            oss << ",";
+            if (show_color) oss << color(node->color);
             oss << dump(*node->value);
-            oss << color(ColorType::NONE);
+            if (show_color) oss << color(ColorType::NONE);
         });
         oss << "]";
         return oss.str();
@@ -205,7 +196,9 @@ protected:
     // 这个函数可以很方便的自动构建二叉树，适合自动化测试
     // 数组保存的是一个完全二叉树（包含空节点）
     // 因此可以使用基于队列的算法进行构建
-    void init(const std::vector<Node*> nodes) {
+    // 注意：此函数绝对不会抛出异常。如果序列 nodes 中有无法插入的 node，会直接释放
+    //      init 会尽最大努力构建一棵二叉树
+    void init(const std::vector<Node*> nodes) noexcept {
         std::queue<Node*> todo;
         auto it = nodes.begin();
         if (it == nodes.end()) return;
@@ -225,6 +218,7 @@ protected:
                 todo.push(front->left);
                 if (front->left) front->left->p = front; // 构建到父节点的指针
             } else {
+                if (*left != nullptr) release_node(*left);
                 todo.push(nullptr);
             }
 
@@ -236,6 +230,7 @@ protected:
                 todo.push(front->right);
                 if (front->right) front->right->p = front;
             } else {
+                if (*right != nullptr) release_node(*right);
                 todo.push(nullptr);
             }
         }
