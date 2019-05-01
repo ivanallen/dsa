@@ -93,34 +93,11 @@ TEST(BinaryTreeTest, LeftRotate) {
              /   \
             4     5
     )";
-    Tree tree({2,4,1,{},{},5,3});
+
+    Tree tree({2, 4, 1, {}, {}, 5, 3});
     tree.left_rotate(2);
     const std::string expect = "preorder:[1,2,4,5,3]\ninorder: [4,2,5,1,3]";
     EXPECT_EQ(tree.dump(false), expect);
-}
-
-TEST(BinaryTreeTest, LeftRotateException) {
-    constexpr std::string_view tree_graph = R"(
-                  2
-                /   \
-               4     1
-                   /   \
-                  5     3
-    )";
-    Tree tree({2,4,1,{},{},5,3});
-    EXPECT_THROW(tree.left_rotate(6), std::runtime_error);
-}
-
-TEST(BinaryTreeTest, RightRotateException) {
-    constexpr std::string_view tree_graph = R"(
-                  1
-                /   \
-               2     3
-             /   \
-            4     5
-    )";
-    Tree tree({2,4,1,{},{},5,3});
-    EXPECT_THROW(tree.right_rotate(6), std::runtime_error);
 }
 
 TEST(BinaryTreeTest, RightRotate) {
@@ -143,6 +120,50 @@ TEST(BinaryTreeTest, RightRotate) {
     tree.right_rotate(1);
     const std::string expect = "preorder:[2,4,1,5,3]\ninorder: [4,2,5,1,3]";
     EXPECT_EQ(tree.dump(false), expect);
+}
+
+TEST(BinaryTreeTest, LeftRotateExceptionNodeNotExsited) {
+    constexpr std::string_view tree_graph = R"(
+                  2
+                /   \
+               4     1
+                   /   \
+                  5     3
+    )";
+    Tree tree({2, 4, 1, {}, {}, 5, 3});
+    EXPECT_THROW(tree.left_rotate(6), std::runtime_error);
+}
+
+TEST(BinaryTreeTest, RightRotateExceptionNodeNotExsited) {
+    constexpr std::string_view tree_graph = R"(
+                  1
+                /   \
+               2     3
+             /   \
+            4     5
+    )";
+    Tree tree({2, 4, 1, {}, {}, 5, 3});
+    EXPECT_THROW(tree.right_rotate(6), std::runtime_error);
+}
+
+TEST(BinaryTreeTest, LeftRotateExceptionNoRightNode) {
+    constexpr std::string_view tree_graph = R"(
+                  1
+                /
+               2
+    )";
+    Tree tree({1, 2});
+    EXPECT_THROW(tree.left_rotate(1), std::runtime_error);
+}
+
+TEST(BinaryTreeTest, RightRotateExceptionNoLeftNode) {
+    constexpr std::string_view tree_graph = R"(
+                  1
+                    \
+                     3
+    )";
+    Tree tree({1, {}, 3});
+    EXPECT_THROW(tree.right_rotate(1), std::runtime_error);
 }
 
 TEST(BinaryTreeTest, Rotate) {
