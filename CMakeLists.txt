@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 set( CMAKE_BUILD_TYPE "Debug")
 
+option(DSA_BUILD_TESTS "build tests alongside the project" OFF)
+
 include_directories(include)
 
 set(DSA_SRC_FILES
@@ -43,17 +45,21 @@ set(GTEST_CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 
 set(GTEST_URL_MD5 "16877098823401d1bf2ed7891d7dce36")
 
-ExternalProject_Add(googletest_ep
-        PREFIX external/googletest
-        URL "https://github.com/google/googletest/archive/release-${GTEST_VERSION}.tar.gz"
-        URL_MD5 ${GTEST_URL_MD5}
-        BUILD_BYPRODUCTS ${GTEST_STATIC_LIB} ${GTEST_MAIN_STATIC_LIB} ${GMOCK_MAIN_STATIC_LIB}
-        CMAKE_ARGS ${GTEST_CMAKE_ARGS}
-        ${EP_LOG_OPTIONS})
-# end of add gtest dependency
 
 
 add_library(dsa SHARED ${DSA_SRC_FILES})
 
 add_subdirectory(examples/tree)
-add_subdirectory(test)
+
+if (DSA_BUILD_TESTS)
+    ExternalProject_Add(googletest_ep
+            PREFIX external/googletest
+            URL "https://github.com/google/googletest/archive/release-${GTEST_VERSION}.tar.gz"
+            URL_MD5 ${GTEST_URL_MD5}
+            BUILD_BYPRODUCTS ${GTEST_STATIC_LIB} ${GTEST_MAIN_STATIC_LIB} ${GMOCK_MAIN_STATIC_LIB}
+            CMAKE_ARGS ${GTEST_CMAKE_ARGS}
+            ${EP_LOG_OPTIONS})
+    # end of add gtest dependency
+    enable_testing()
+    add_subdirectory(test)
+endif()

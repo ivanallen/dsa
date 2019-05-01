@@ -16,7 +16,8 @@ fi
 mkdir -p build
 pushd build
 
-cmake ..
+cmake .. "-DDSA_BUILD_TESTS=true"
+
 if [[ "$unamestr" == "Darwin" ]]; then
     make -j `sysctl -n machdep.cpu.thread_count`
 else

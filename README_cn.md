@@ -2,25 +2,21 @@
 
 [![Build Status](https://www.travis-ci.org/ivanallen/dsa.svg?branch=master)](https://travis-ci.com/ivanallen/dsa)
 
-DSA is a library of basic and advanced data structure, as well as common algorithm. We are committed to providing a complete, concise set of code to implement all modules.
+DSA 是一个包含基础和高级数据结构，以及常用算法的库。我们致力于提供一套完整的，简洁的代码实现所有模块。
 
 ## Features
-
-- Modern C++ style(Based on C++17)
-- Full comments
-- Clear and pleasant API
-- Strong ability to debug
+- 现代 C++ 风格(基于 C++17 语法)
+- 完善的注释
+- 接口简单易用
+- 强大的 Debug 能力
 
 ## How to build
-
-```
-$ bash ./build.sh
-$ cd build & make test
-```
+1. 在根目录执行`bash ./build.sh`
+2. 在`build/`目录下会生成相关的库和可执行文件
 
 ## Example
 
-A easy demo showing how to create a binary tree.
+下面的例子演示如何通过数组创建一棵二叉树。
 
 ```c++
 #include <iostream>
@@ -66,6 +62,6 @@ int main() {
 
 610441700
 
-- DingDingGroup:
+- 钉钉群:
 
 <img src="https://github.com/ivanallen/dsa/blob/master/docs/images/DingDingGroup.png"  height="220" width="220">
