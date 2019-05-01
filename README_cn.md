@@ -47,10 +47,10 @@ int main() {
     Tree tree({1, 2, 3, 4, 5});
     std::cout << tree << std::endl;
 
-    // them rotate at root
+    // Rotate at root
     tree.right_rotate(1);
 
-    // print the tree
+    // Print the tree
     std::cout << tree << std::endl;
     return 0;
 }

@@ -2,7 +2,7 @@
 
 [![Build Status](https://www.travis-ci.org/ivanallen/dsa.svg?branch=master)](https://travis-ci.com/ivanallen/dsa)
 
-DSA is a library of basic and advanced data structure, as well as common algorithm. We are committed to providing a complete, concise set of code to implement all modules.
+DSA is a library of basic and advanced data structure, as well as common algorithm. We are committed to providing a complete and concise set of code to implement all modules.
 
 ## Features
 
@@ -51,10 +51,10 @@ int main() {
     Tree tree({1, 2, 3, 4, 5});
     std::cout << tree << std::endl;
 
-    // them rotate at root
+    // Rotate at root
     tree.right_rotate(1);
 
-    // print the tree
+    // Print the tree
     std::cout << tree << std::endl;
     return 0;
 }
