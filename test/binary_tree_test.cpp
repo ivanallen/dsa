@@ -99,6 +99,30 @@ TEST(BinaryTreeTest, LeftRotate) {
     EXPECT_EQ(tree.dump(false), expect);
 }
 
+TEST(BinaryTreeTest, LeftRotateException) {
+    constexpr std::string_view tree_graph = R"(
+                  2
+                /   \
+               4     1
+                   /   \
+                  5     3
+    )";
+    Tree tree({2,4,1,{},{},5,3});
+    EXPECT_THROW(tree.left_rotate(6), std::runtime_error);
+}
+
+TEST(BinaryTreeTest, RightRotateException) {
+    constexpr std::string_view tree_graph = R"(
+                  1
+                /   \
+               2     3
+             /   \
+            4     5
+    )";
+    Tree tree({2,4,1,{},{},5,3});
+    EXPECT_THROW(tree.right_rotate(6), std::runtime_error);
+}
+
 TEST(BinaryTreeTest, RightRotate) {
     constexpr std::string_view tree_graph = R"(
                   1        <- right_rotate
