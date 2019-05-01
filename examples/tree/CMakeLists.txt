@@ -1,0 +1,3 @@
+add_executable(binary_tree_examples binary_tree_example.cpp)
+add_executable(binary_search_tree_examples binary_search_tree_example.cpp)
+add_executable(red_black_tree_examples red_black_tree_example.cpp)

@@ -55,13 +55,7 @@ ExternalProject_Add(googletest_ep
 
 add_library(dsa SHARED ${DSA_SRC_FILES})
 
-add_executable(demo_test test/demo_test.cpp)
+add_subdirectory(examples/tree)
+add_subdirectory(test)
 
-#TODO: 怎么生成到 examples/tree 目录下
-add_executable(binary_tree_examples examples/tree/binary_tree_example.cpp)
-add_executable(binary_search_tree_examples examples/tree/binary_search_tree_example.cpp)
-add_executable(red_black_tree_examples examples/tree/red_black_tree_example.cpp)
-add_dependencies(demo_test dsa googletest_ep)
 
-include_directories(SYSTEM ${GTEST_INCLUDE_DIR})
-target_link_libraries(demo_test ${GTEST_STATIC_LIB} ${GTEST_MAIN_STATIC_LIB} ${GMOCK_MAIN_STATIC_LIB} pthread)
