@@ -46,7 +46,6 @@ set(GTEST_CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 set(GTEST_URL_MD5 "16877098823401d1bf2ed7891d7dce36")
 
 
-
 add_library(dsa SHARED ${DSA_SRC_FILES})
 
 add_subdirectory(examples/tree)
