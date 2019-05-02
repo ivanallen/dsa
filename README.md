@@ -20,7 +20,7 @@ $ cd build && make test
 
 ## Example
 
-The following is an easy demo that shows how to create a binary tree.
+The following is an easy demo showing how to create a binary tree.
 
 ```c++
 #include <iostream>
