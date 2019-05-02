@@ -2,7 +2,7 @@
 
 [![Build Status](https://www.travis-ci.org/ivanallen/dsa.svg?branch=master)](https://travis-ci.com/ivanallen/dsa)
 
-DSA is a library of basic and advanced data structure, as well as common algorithm. We are committed to providing a complete and concise set of code to implement all modules.
+DSA is a library of basic and advanced data structures, as well as common algorithms. We are committed to providing a complete and concise set of code to implement all modules.
 
 ## Features
 
@@ -20,7 +20,7 @@ $ cd build && make test
 
 ## Example
 
-A easy demo showing how to create a binary tree.
+The following is an easy demo showing how to create a binary tree.
 
 ```c++
 #include <iostream>
@@ -62,10 +62,8 @@ int main() {
 
 ## Contact
 
-- QQ
+- QQ Group: 610441700
 
-610441700
-
-- DingDingGroup:
+- Dingding Group:
 
 <img src="https://github.com/ivanallen/dsa/blob/master/docs/images/DingDingGroup.png"  height="220" width="220">
