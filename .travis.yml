@@ -16,8 +16,9 @@ matrix:
         - export CXX="g++-7"
       script:
         - bash ./build.sh
-        - ./build/test/run_demo_test
-        - ./build/test/run_binary_tree_test
+        - cd build && make test
+#        - ./build/test/run_demo_test
+#        - ./build/test/run_binary_tree_test
       notifications:
         email: true
 
