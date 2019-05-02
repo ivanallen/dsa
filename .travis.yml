@@ -5,7 +5,7 @@ compiler: g++
 
 matrix:
   include:
-    # Job1: This is the job of building project on ubuntu linux os.
+    # Job1: This is the job of building project and running all unit tests on ubuntu linux os.
     - os: linux
       dist: trusty
       before_install:
@@ -17,8 +17,6 @@ matrix:
       script:
         - bash ./build.sh
         - cd build && make test
-#        - ./build/test/run_demo_test
-#        - ./build/test/run_binary_tree_test
       notifications:
         email: true
 
