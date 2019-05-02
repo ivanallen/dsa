@@ -14,7 +14,10 @@ matrix:
       install:
         - sudo apt-get install -qq g++-7
         - export CXX="g++-7"
-      script: bash ./build.sh
+      script:
+        - bash ./build.sh
+        - ./build/test/demo_test
+        - ./build/test/binary_tree_test
       notifications:
         email: true
 
