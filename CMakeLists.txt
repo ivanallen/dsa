@@ -5,7 +5,7 @@ include(ExternalProject)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set( CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_BUILD_TYPE "Debug")
 
 option(DSA_BUILD_TESTS "build tests alongside the project" OFF)
 
@@ -18,9 +18,12 @@ set(DSA_SRC_FILES
 # Add gtest dependency
 set(GTEST_VERSION "1.8.0")
 
+
 if(APPLE)
+    set(CMAKE_CXX_FLAGS "-g -fno-omit-frame-pointer -fsanitize=address")
     set(GTEST_CMAKE_CXX_FLAGS "-fPIC -DGTEST_USE_OWN_TR1_TUPLE=1 -Wno-unused-value -Wno-ignored-attributes")
 elseif(NOT MSVC)
+    set(CMAKE_CXX_FLAGS "-g -fno-omit-frame-pointer -fsanitize=address -fuse-ld=gold")
     set(GTEST_CMAKE_CXX_FLAGS "-fPIC")
 endif()
 
