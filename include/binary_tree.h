@@ -99,6 +99,12 @@ public:
         });
     }
 
+    void postorder(const std::function<void (const T&)>& cb) const {
+        postorder([&cb](Node* node) {
+            cb(*node->value);
+        });
+    }
+
     // 直接根据值进行旋转。
     // 如果有重复值，优先旋转深度最小最靠左的那个。
     // WARNING: v 如果没有实现和 ostream 的对接，这里 oss 会编译失败。
@@ -239,8 +245,7 @@ protected:
     // void cb(Node*)
     // 迭代版本中序遍历
     // 栈后访问法
-    template <typename FUNC>
-    void preorder(FUNC&& cb) const {
+    void preorder(const std::function<void (Node*)>& cb) const {
         if (!_root) return;
         std::stack<Node*> todo;
 
@@ -256,8 +261,7 @@ protected:
         }
     }
 
-    template <typename FUNC>
-    void inorder(FUNC&& cb) const {
+    void inorder(const std::function<void (Node*)>& cb) const {
         if (!_root) return;
         std::stack<Node*> todo;
 
@@ -276,6 +280,34 @@ protected:
             while (p) {
                 todo.push(p);
                 p = p->left;
+            }
+        }
+    }
+
+    void postorder(const std::function<void (Node*)>& cb) const {
+        if (!_root) return;
+        std::stack<Node*> todo;
+
+        auto p = _root;
+        Node* pre = nullptr;
+        while (p) {
+            todo.push(p);
+            p = p->left;
+        }
+
+        while (!todo.empty()) {
+            auto node = todo.top();
+            if (node->right == pre) {
+                cb(node);
+                todo.pop();
+                pre = node;
+            } else {
+                p = node->right;
+                while (p) {
+                    todo.push(p);
+                    p = p->left;
+                }
+                pre = nullptr;
             }
         }
     }

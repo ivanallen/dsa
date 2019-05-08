@@ -26,8 +26,23 @@ int main() {
                          9
     )"; 
 
+
     std::cout << tree_graph << std::endl;
     std::cout << tree << std::endl << std::endl;
+
+    bool first = true;
+    std::cout << "postorder:[";
+    tree.postorder([&first](int e) {
+        if (first) {
+            std::cout << e;
+            first = false;
+        } else {
+            std:: cout << "," << e;
+        }
+    });
+
+    std::cout << "]" << std::endl;
+    std::cout << std::endl;
 
     // 经过旋转后，变成向左延展的链
     tree.left_rotate(3);
