@@ -25,8 +25,3 @@ else
 fi
 
 popd
-
-# install to build/lib
-mkdir -p build/lib/lib64
-cp -r include/ build/lib/include/
-mv build/libdsa.$LIBRARY_NAME_SUFFIX build/lib/lib64/libdsa.$LIBRARY_NAME_SUFFIX
