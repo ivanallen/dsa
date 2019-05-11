@@ -9,11 +9,7 @@ set(CMAKE_BUILD_TYPE "Debug")
 
 option(DSA_BUILD_TESTS "build tests alongside the project" OFF)
 
-include_directories(include)
-
-set(DSA_SRC_FILES
-#        "src/kmp.cpp"
-        "src/lcs.cpp")
+include_directories(dsa/include)
 
 # Add gtest dependency
 set(GTEST_VERSION "1.8.0")
@@ -49,7 +45,7 @@ set(GTEST_CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 set(GTEST_URL_MD5 "16877098823401d1bf2ed7891d7dce36")
 
 
-add_library(dsa SHARED ${DSA_SRC_FILES})
+#add_library(dsa SHARED ${DSA_SRC_FILES})
 
 add_subdirectory(examples/tree)
 
