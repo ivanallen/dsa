@@ -1,5 +1,4 @@
-#ifndef MY_VECTOR_H
-#define MY_VECTOE_H
+#pragma once
 #include<cassert>
 typedef unsigned int  size_t;
 template < class T>
@@ -173,6 +172,4 @@ Vector<T>& Vector<T>::operator=(const Vector<T> & a)
     }
     return *this;
 }
-#endif
-
 
