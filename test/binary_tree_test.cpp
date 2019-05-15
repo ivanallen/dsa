@@ -4,7 +4,7 @@
 #include "binary_tree.h"
 
 namespace dsa {
-namespace test {
+namespace {
 
 using Tree = BinaryTree<int>;
 
@@ -201,5 +201,5 @@ TEST(BinaryTreeTest, Rotate) {
     EXPECT_EQ(dump, expect);
 }
 
-} // namespace test
+}
 } // namespace dsa
