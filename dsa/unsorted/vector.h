@@ -1,5 +1,7 @@
 #pragma once
 #include<cassert>
+namespace dsa {
+
 typedef unsigned int  size_t;
 template < class T>
 class Vector {
@@ -172,4 +174,7 @@ Vector<T>& Vector<T>::operator=(const Vector<T> & a)
     }
     return *this;
 }
+
+} // namespace dsa
+
 
