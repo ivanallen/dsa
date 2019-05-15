@@ -27,7 +27,7 @@ private:
     T*      _buf;
     const size_t _max_capacity = 65536;
 };
-template<class T>
+template <typename T>
 Vector<T>::Vector()
 {   
     _size = 0;
@@ -35,7 +35,7 @@ Vector<T>::Vector()
     _capacity = 1;
 }
 
-template<class T>
+template <typename T>
 Vector<T>::Vector(int s, const T& a)
 {   
     if (s > _max_capacity) {
@@ -51,7 +51,7 @@ Vector<T>::Vector(int s, const T& a)
         _buf[i] = a;
     }
 }
-template<class T>
+template <typename T>
 Vector<T>::Vector(const Vector<T> & a)
 {
     _size = a._size;
@@ -62,7 +62,7 @@ Vector<T>::Vector(const Vector<T> & a)
     }
 }
 
-template<class T>
+template <typename T>
 Vector<T>::Vector(iterator first, iterator last)
 {
     _size = last - first;
@@ -80,36 +80,36 @@ Vector<T>::Vector(iterator first, iterator last)
 
 }
 
-template<class T>
+template <typename T>
 Vector<T>::~Vector()
 {
     delete[] _buf;
 }
 
-template<class T>
+template <typename T>
 size_t Vector<T>::size() const
 {
     return _size;
 }
 
-template<class T>
+template <typename T>
 size_t Vector<T>::capacity() const
 {
     return _capacity;
 }
-template<class T>
+template <typename T>
 size_t Vector<T>::max_capacity() const
 {
     return _max_capacity;
 }
-template<class T>
+template <typename T>
 T& Vector<T>::operator[](int index)
 {
     assert(index >= 0 && index < _size);
     return _buf[index];
 }
 
-template<class T>
+template <typename T>
 void Vector<T>::push_back(const T& val)
 {
     if (_size < _capacity) {
@@ -133,13 +133,13 @@ void Vector<T>::push_back(const T& val)
     _buf = tmp; 
 }
 
-template<class T>
+template <typename T>
 void Vector<T>::pop_back()
 {
     assert(_size > 0);
     _size--;
 }
-template<class T>
+template <typename T>
 bool Vector<T>::empty() const
 {
     if (_size == 0) {
@@ -147,17 +147,17 @@ bool Vector<T>::empty() const
     }
     return false;
 }
-template<class T>
+template <typename T>
 typename Vector<T>::iterator Vector<T>::begin() const
 {
     return _buf;
 }
-template<class T>
+template <typename T>
 typename Vector<T>::iterator Vector<T>::end() const
 {
     return _buf + _size;
 }
-template<class T>
+template <typename T>
 Vector<T>& Vector<T>::operator=(const Vector<T> & a)
 {
     if (this == &a) {
