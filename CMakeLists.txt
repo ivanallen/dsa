@@ -47,7 +47,7 @@ set(GTEST_URL_MD5 "16877098823401d1bf2ed7891d7dce36")
 
 #add_library(dsa SHARED ${DSA_SRC_FILES})
 
-add_subdirectory(examples/tree)
+add_subdirectory(examples)
 
 if (DSA_BUILD_TESTS)
     ExternalProject_Add(googletest_ep

@@ -11,3 +11,4 @@ function(dsa_test test_name)
 endfunction()
 
 dsa_test(binary_tree_test)
+dsa_test(vector_test)
