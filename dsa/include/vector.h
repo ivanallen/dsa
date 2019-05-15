@@ -101,10 +101,10 @@ public:
     }
 
     Iterator begin() const {
-        return reinterpret_cast<T*>(_start);
+        return std::launder(reinterpret_cast<T*>(_start));
     }
     Iterator end() const {
-        return reinterpret_cast<T*>(_finish);
+        return std::launder(reinterpret_cast<T*>(_finish));
     }
 private:
     using Storage = typename std::aligned_storage<sizeof(T), alignof(T)>::type;
