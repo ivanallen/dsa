@@ -41,5 +41,16 @@ int main() {
         std::cout << v[i].n << " ";
     }
     std::cout << std::endl;
+
+    Vector<int> v2;
+
+    for (int i = 0; i < 10; ++i) {
+        v2.push_back(i);
+    }
+
+    for (int i = 0; i < v2.size(); ++i) {
+        std::cout << v2[i] << " ";
+    }
+    std::cout << std::endl;
     return 0;
 }
