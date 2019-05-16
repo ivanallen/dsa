@@ -40,7 +40,7 @@ public:
     ~Vector() {
         if (_start == nullptr) return;
         for (auto it = _start; it != _finish; ++it) {
-            reinterpret_cast<T*>(it)->~T();
+            std::launder(reinterpret_cast<T*>(it))->~T();
         }
         delete[] _start;
     }
@@ -54,6 +54,7 @@ public:
     }
 
     // about std::launder: https://stackoverflow.com/questions/39382501/what-is-the-purpose-of-stdlaunder
+    // https://miyuki.github.io/2016/10/21/std-launder.html
     template <typename U>
     void push_back(U&& val) {
         if (_finish == _end_of_storage) {
@@ -61,7 +62,7 @@ public:
             size_t len = old_size == 0 ? 1 : 2 * old_size;
             auto new_start = new Storage[len];
             if (_start) {
-                memmove(new_start, _start, _finish - _start);
+                uninitialized_copy((const char*)_start, (const char*)_finish, (char*)new_start);
                 for (auto it = _start; it != _finish; ++it) {
                     std::launder(reinterpret_cast<T*>(it))->~T();
                 }
@@ -105,6 +106,11 @@ public:
     }
     Iterator end() const {
         return std::launder(reinterpret_cast<T*>(_finish));
+    }
+private:
+    char* uninitialized_copy(const char* first, const char* last, char* result) {
+        memmove(result, first, last - first);
+        return result + (last - first);
     }
 private:
     using Storage = typename std::aligned_storage<sizeof(T), alignof(T)>::type;
