@@ -140,6 +140,13 @@ public:
         right_rotate(node);
     }
 
+    std::string draw(const std::string& indent = "", bool show_color = true, bool only_key = true) const {
+        if (!_root) return "null";
+        std::stringstream oss;
+        draw(_root, indent, true, show_color, only_key, oss); 
+        return oss.str();
+    }
+
     // 生成前序和中序序列返回
     // TODO: 或许可以做成可视化？
     std::string dump(bool show_color = true) const {
@@ -149,14 +156,14 @@ public:
         preorder([&oss, &first, show_color, this](Node* node) {
             if (first) {
                 if (show_color) oss << color(node->color);
-                oss << dump(*node->value);
+                oss << dump(*node->value, true);
                 if (show_color) oss << color(ColorType::NONE);
                 first = false;
                 return;
             }
             oss << ",";
             if (show_color) oss << color(node->color);
-            oss << dump(*node->value);
+            oss << dump(*node->value, true);
             if (show_color) oss << color(ColorType::NONE);
         });
         oss << "]" << std::endl;
@@ -166,14 +173,14 @@ public:
         inorder([&oss, &first, show_color, this](Node* node) {
             if (first) {
                 if (show_color) oss << color(node->color);
-                oss << dump(*node->value);
+                oss << dump(*node->value, true);
                 if (show_color) oss << color(ColorType::NONE);
                 first = false;
                 return;
             }
             oss << ",";
             if (show_color) oss << color(node->color);
-            oss << dump(*node->value);
+            oss << dump(*node->value, true);
             if (show_color) oss << color(ColorType::NONE);
         });
         oss << "]";
@@ -181,7 +188,7 @@ public:
     }
 
     template <typename U>
-    std::string dump(const U& val) const {
+    std::string dump(const U& val, bool) const {
         std::stringstream oss;
         oss << val;
         return oss.str();
@@ -192,9 +199,13 @@ public:
     // 当然，如果 Key 和 Value 本身无法序列化，编译会报错
     // 因此，UserType 要想使用 dump 功能，一定要实现序列化。
     template <typename Key, typename Value>
-    std::string dump(const std::pair<Key, Value>& val) const {
+    std::string dump(const std::pair<Key, Value>& val, bool only_key = false) const {
         std::stringstream oss;
-        oss << "(" << val.first << "," << val.second << ")";
+        if (only_key) {
+            oss << val.first;
+        } else {
+            oss << "(" << val.first << "," << val.second << ")";
+        }
         return oss.str();
     }
 protected:
@@ -448,6 +459,26 @@ protected:
         return nullptr;
     }
 
+    void draw(const Node* node, const std::string& prefix = "", bool left = true, bool show_color = true, bool only_key = true, std::ostream& out = std::cout) const {
+        if (node == nullptr) {
+            return; 
+        }
+
+        if(node->right) {
+            draw(node->right, prefix + (left ? "│   " : "    "), false, show_color, only_key, out);
+        }
+
+        out << prefix + (left ? "└── " : "┌── ");
+        if (show_color) out << color(node->color);
+        out << dump(*node->value, only_key);
+        if (show_color) out << color(ColorType::NONE);
+        out << "\n";
+
+        if (node->left) {
+            draw(node->left, prefix + (left ? "    " : "│   "), true, show_color, only_key, out);
+        }
+    }
+
     template <typename U>
     Node* create_node(U&& u) const {
         return new Node(std::forward<U>(u));
@@ -462,7 +493,7 @@ protected:
 
 template <typename T>
 std::ostream& operator<<(std::ostream& out, const BinaryTree<T>& tree) {
-    return  out << tree.dump();
+    return  out << tree.draw();
 }
 
 // 内部节点
