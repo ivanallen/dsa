@@ -12,10 +12,6 @@ using namespace dsa;
 
 using Tree = RedBlackTree<int, int>;
 
-std::ostream& operator<<(std::ostream& out, const std::pair<int, int>& val) {
-    return out << "(" << val.first << "," << val.second << ")";
-}
-
 int main() {
     Tree tree;
 
